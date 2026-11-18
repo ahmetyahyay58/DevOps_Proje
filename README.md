@@ -47,4 +47,49 @@ Tarayıcıda **http://localhost:8000/docs** adresini açın. Tüm uç noktalar b
 
 ## Özellikler
 
-_Geliştirme sürüyor. Tamamlanan özellikler ve nasıl denenecekleri burada listelenecek._
+| # | Özellik | Durum |
+|---|---|---|
+| 1 | Kayıp / bulunan eşya ilanı oluşturma | ✅ Tamamlandı |
+| 2 | Kayıp ve bulunan ilanları otomatik eşleştirme | ⏳ Geliştiriliyor |
+
+### Özellik 1: Kayıp / bulunan eşya ilanı oluşturma
+
+Kullanıcı kaybettiği ya da bulduğu bir eşya için ilan açar. İlanda tür (`kayip` / `bulundu`), kategori, açıklama, konum ve tarih bulunur.
+
+**Uç noktalar**
+
+| Yöntem | Adres | Açıklama |
+|---|---|---|
+| `POST` | `/ilanlar` | Yeni ilan oluşturur |
+| `GET` | `/ilanlar` | İlanları listeler (`?tur=kayip` veya `?tur=bulundu` ile filtrelenir) |
+| `GET` | `/ilanlar/{id}` | Tek bir ilanı getirir |
+
+Geçerli kategoriler: `cuzdan`, `telefon`, `anahtar`, `kimlik_kart`, `canta`, `elektronik`, `kiyafet`, `diger`
+
+**Nasıl denenir?** (`/docs` sayfasında)
+
+1. `POST /ilanlar` → **Try it out** → aşağıdaki gövdeyi yapıştırıp **Execute**'a basın:
+   ```json
+   {
+     "tur": "kayip",
+     "kategori": "cuzdan",
+     "aciklama": "Kahverengi deri cüzdan, içinde öğrenci kartı var",
+     "konum": "Kütüphane",
+     "tarih": "2026-11-15"
+   }
+   ```
+   **Beklenen:** `201` yanıtı ve `"id": 1` içeren ilan.
+2. Aynı şekilde `"tur": "bulundu"` olan ikinci bir ilan ekleyin.
+3. `GET /ilanlar` → **Execute**: iki ilan da listelenir. `tur` alanına `bulundu` yazarsanız yalnızca bulunan ilanı görürsünüz.
+4. **Hatalı girişler** (hepsi `422` döner):
+   - `"kategori": "uzay_gemisi"` → geçersiz kategori
+   - `kategori` alanını silmek → zorunlu alan eksik
+   - `"tarih"` olarak yarının tarihi → gelecek tarihli ilan açılamaz
+
+## Testler
+
+Kabul kriterlerinin her biri otomatik testlerle doğrulanır:
+
+```bash
+pytest -v
+```
