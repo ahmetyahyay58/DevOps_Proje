@@ -16,13 +16,13 @@ Kayıp ve bulunan ilanlarını tek bir yerde toplar; kategori, konum ve tarih bi
 ## İş Takip Panosu
 
 Görevler ve kabul kriterleri GitHub Projects panosunda takip ediliyor:
-👉 **[Kayıp Eşya Panosu](PANO_LINKI_BURAYA)**
+👉 **[Kayıp Eşya Panosu](https://github.com/users/ahmetyahyay58/projects/1)**
 
 ## Kullanılan Teknolojiler
 
 - Python 3.12, FastAPI, Pydantic
 - Pytest (otomatik testler)
-- GitHub Codespaces (kurulumsuz çalıştırma)
+- GitHub Codespaces + Dev Container (kurulumsuz çalıştırma; geliştirme ortamı `.devcontainer/devcontainer.json` dosyasında kod olarak tanımlı, herkes aynı ortamı alır)
 
 ## Projeyi Çalıştırma
 
@@ -45,12 +45,19 @@ uvicorn app.main:app --reload
 
 Tarayıcıda **http://localhost:8000/docs** adresini açın. Tüm uç noktalar bu sayfada **Try it out** butonuyla denenebilir.
 
+> **Not:** Windows'ta 8000 portu için `WinError 10013` hatası alırsanız başka bir port kullanın:
+> `python -m uvicorn app.main:app --reload --port 8080` → http://localhost:8080/docs
+
+### Örnek veriler
+
+Uygulama her açıldığında 6 örnek ilanla başlar (2 kayıp, 4 bulunan). Böylece hiçbir veri girmeden eşleştirme denenebilir. Veriler bellekte tutulur; uygulama yeniden başlatılınca örnek verilere döner.
+
 ## Özellikler
 
 | # | Özellik | Durum |
 |---|---|---|
 | 1 | Kayıp / bulunan eşya ilanı oluşturma | ✅ Tamamlandı |
-| 2 | Kayıp ve bulunan ilanları otomatik eşleştirme | ⏳ Geliştiriliyor |
+| 2 | Kayıp ve bulunan ilanları otomatik eşleştirme | ✅ Tamamlandı |
 
 ### Özellik 1: Kayıp / bulunan eşya ilanı oluşturma
 
@@ -78,18 +85,54 @@ Geçerli kategoriler: `cuzdan`, `telefon`, `anahtar`, `kimlik_kart`, `canta`, `e
      "tarih": "2026-11-15"
    }
    ```
-   **Beklenen:** `201` yanıtı ve `"id": 1` içeren ilan.
+   **Beklenen:** `201` yanıtı ve yeni bir `id` içeren ilan (örnek veriler 1–6 numaraları kullandığı için ilk yeni ilan `7` olur).
 2. Aynı şekilde `"tur": "bulundu"` olan ikinci bir ilan ekleyin.
-3. `GET /ilanlar` → **Execute**: iki ilan da listelenir. `tur` alanına `bulundu` yazarsanız yalnızca bulunan ilanı görürsünüz.
+3. `GET /ilanlar` → **Execute**: eklediğiniz ilanlar örnek ilanlarla birlikte listelenir. `tur` alanına `bulundu` yazarsanız yalnızca bulunan ilanları görürsünüz.
 4. **Hatalı girişler** (hepsi `422` döner):
    - `"kategori": "uzay_gemisi"` → geçersiz kategori
    - `kategori` alanını silmek → zorunlu alan eksik
    - `"tarih"` olarak yarının tarihi → gelecek tarihli ilan açılamaz
+
+### Özellik 2: Kayıp ve bulunan ilanları otomatik eşleştirme
+
+Bir ilan için karşı türdeki ilanlar taranır (kayıp ilanı için bulunanlar, bulunan ilanı için kayıplar) ve olası eşleşmeler **uyum puanına** göre sıralanır.
+
+**Puanlama (en fazla 100)**
+
+| Kural | Etkisi |
+|---|---|
+| Kategori aynı değil | Önerilmez |
+| Eşya kaybolmadan önce bulunmuş görünüyor | Önerilmez |
+| Kategori aynı | 50 puan |
+| Konum aynı (büyük/küçük harf fark etmez) | +30 puan |
+| Tarih yakınlığı | Aynı gün +20, her gün farkı için −2 (en az 0) |
+
+**Uç nokta**
+
+| Yöntem | Adres | Açıklama |
+|---|---|---|
+| `GET` | `/ilanlar/{id}/eslesmeler` | İlan için önerilen eşleşmeleri puanıyla birlikte listeler |
+
+**Nasıl denenir?** (`/docs` sayfasında, hiçbir veri girmeden)
+
+1. `GET /ilanlar/{ilan_id}/eslesmeler` → **Try it out** → `ilan_id` = **1** → **Execute**
+   **Beklenen:** 1 numaralı ilan (Kütüphane'de kaybolan kahverengi cüzdan) için iki öneri:
+   - **98 puan** — Kütüphane'de bulunan kahverengi cüzdan (aynı kategori + aynı konum + 1 gün fark)
+   - **66 puan** — Mühendislik Fakültesi'nde bulunan siyah cüzdan (aynı kategori, farklı konum)
+   - 6 numaralı cüzdan **önerilmez**, çünkü eşya kaybolmadan önce bulunmuş görünüyor.
+2. `ilan_id` = **2** ile deneyin (kayıp telefon) → **boş liste `[]`**, çünkü bulunan ilanlar arasında telefon yok.
+3. `ilan_id` = **3** ile deneyin (bulunan cüzdan) → ters yönde de çalışır: 1 numaralı kayıp ilanı önerilir.
+4. Kendi senaryonuz: `POST /ilanlar` ile bir `bulundu` ilanı ekleyin (`"kategori": "telefon"`, `"konum": "Yemekhane"`, bugünün tarihi), sonra tekrar `ilan_id` = **2** ile eşleşmelere bakın → yeni ilan yüksek puanla çıkar.
 
 ## Testler
 
 Kabul kriterlerinin her biri otomatik testlerle doğrulanır:
 
 ```bash
-pytest -v
+python -m pytest -v
 ```
+
+| Test dosyası | Doğruladığı görev |
+|---|---|
+| `tests/test_ilan_olusturma.py` | #1 İlan oluşturma |
+| `tests/test_eslestirme.py` | #2 Otomatik eşleştirme |
