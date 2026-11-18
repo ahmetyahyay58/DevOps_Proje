@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from app.models import Ilan, IlanOlustur, IlanTuru
 
 
@@ -28,4 +30,29 @@ class IlanDeposu:
         self._sonraki_id = 1
 
 
+def ornek_verileri_yukle(depo: "IlanDeposu") -> None:
+    """Uygulamayı deneyenlerin eşleştirmeyi hemen görebilmesi için örnek ilanlar ekler.
+    Tarihler bugüne göre hesaplanır, böylece hiçbir zaman gelecek tarihli olmaz."""
+    bugun = date.today()
+    ornekler = [
+        ("kayip", "cuzdan", "Kahverengi deri cüzdan, içinde öğrenci kartı var", "Kütüphane", 3),
+        ("kayip", "telefon", "Siyah telefon, kırık ekran koruyuculu", "Yemekhane", 2),
+        ("bulundu", "cuzdan", "Kahverengi cüzdan bulundu, danışmaya teslim edildi", "Kütüphane", 2),
+        ("bulundu", "cuzdan", "Siyah cüzdan, kantinin yanında", "Mühendislik Fakültesi", 1),
+        ("bulundu", "anahtar", "Mavi anahtarlıklı ev anahtarı", "Yemekhane", 1),
+        ("bulundu", "cuzdan", "Küçük bozuk para cüzdanı", "Kütüphane", 5),
+    ]
+    for tur, kategori, aciklama, konum, gun_once in ornekler:
+        depo.ekle(
+            IlanOlustur(
+                tur=tur,
+                kategori=kategori,
+                aciklama=aciklama,
+                konum=konum,
+                tarih=bugun - timedelta(days=gun_once),
+            )
+        )
+
+
 depo = IlanDeposu()
+ornek_verileri_yukle(depo)

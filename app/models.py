@@ -53,3 +53,10 @@ class Ilan(IlanOlustur):
     """Sisteme kaydedilmiş, ID almış ilan."""
 
     id: int
+
+
+class Eslesme(BaseModel):
+    """Bir ilana önerilen olası eşleşme ve uyum puanı (0-100)."""
+
+    puan: int
+    ilan: Ilan
