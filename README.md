@@ -1,8 +1,6 @@
-# Kayıp Eşya API
+# Kayıp Eşya
 
-Kampüste kaybolan ve bulunan eşyaları buluşturan bir web servisi.
-
-> **Hızlıca denemek için:** [Projeyi Çalıştırma](#projeyi-çalıştırma) bölümündeki **Open in GitHub Codespaces** butonuna tıklayın; kurulum gerekmez.
+Kampüste kaybolan ve bulunan eşyaları buluşturan bir web uygulaması.
 
 ## Problem
 
@@ -13,34 +11,20 @@ Kampüste kaybolan eşyalar (cüzdan, telefon, anahtar, öğrenci kartı…) gen
 - **Eşyasını kaybeden öğrenci ve personel:** Kaybettiği eşya için ilan açar, olası eşleşmeleri görür.
 - **Bir eşya bulan kişi:** Bulduğu eşyayı kaydeder, eşyanın sahibine ulaşmasına yardım eder.
 
-Kayıp ve bulunan ilanlarını tek bir yerde toplar; kategori, konum ve tarih bilgisine göre eşleştirme önerir.
+Uygulama kayıp ve bulunan ilanlarını tek bir yerde toplar; kategori, konum ve tarih bilgisine göre eşleştirme önerir.
 
 ## İş Takip Panosu
 
 Görevler ve kabul kriterleri GitHub Projects panosunda takip ediliyor:
 👉 **[Kayıp Eşya Panosu](https://github.com/users/ahmetyahyay58/projects/1)**
 
-## Kullanılan Teknolojiler
-
-- Python 3.12, FastAPI, Pydantic
-- HTML, CSS ve JavaScript (ek kütüphane ya da derleme adımı olmayan tek sayfalık arayüz)
-- Pytest (otomatik testler)
-- GitHub Codespaces + Dev Container (kurulumsuz çalıştırma; geliştirme ortamı `.devcontainer/devcontainer.json` dosyasında kod olarak tanımlı, herkes aynı ortamı alır)
+Panodaki görevlerden **#1 İlan oluşturma** ve **#2 Otomatik eşleştirme** geliştirilip tamamlandı.
 
 ## Projeyi Çalıştırma
 
-### Seçenek 1: Kurulum yapmadan, tarayıcıda (önerilen)
+### Seçenek 1: Kendi bilgisayarınızda
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ahmetyahyay58/DevOps_Proje?quickstart=1)
-
-1. Yukarıdaki butona tıklayın, açılan sayfada **Create codespace**'e basın.
-2. 2–3 dakika bekleyin. Kurulum bitince uygulama, ekranın içinde kendiliğinden açılır.
-
-Uygulamayı ayrı bir sekmede tam ekran görmek isterseniz, açılan önizleme panelinin sağ üstündeki **Tarayıcıda aç** simgesine tıklayın. API dokümantasyonu için adresin sonuna `/docs` ekleyin.
-
-### Seçenek 2: Kendi bilgisayarınızda
-
-Python 3.10 veya üstü gerekir.
+Python 3.10 veya üstü ve Git gerekir. Terminalde sırayla çalıştırın:
 
 ```bash
 git clone https://github.com/ahmetyahyay58/DevOps_Proje.git
@@ -49,59 +33,67 @@ python -m pip install -r requirements.txt
 python -m uvicorn app.main:app --reload
 ```
 
-Tarayıcıda **http://localhost:8000** adresini açın: uygulamanın web arayüzü görünür. API dokümantasyonu **http://localhost:8000/docs** adresindedir; tüm uç noktalar orada **Try it out** butonuyla denenebilir.
+Terminalde `Application startup complete` yazınca uygulama hazırdır. Açmak için:
 
-> **Not:** Windows'ta 8000 portu için `WinError 10013` hatası alırsanız başka bir port kullanın:
-> `python -m uvicorn app.main:app --reload --port 8080` → http://localhost:8080
+- Terminaldeki **`http://127.0.0.1:8000`** linkine `Ctrl` tuşuna basılı tutarak tıklayın, **ya da**
+- Tarayıcıda **http://127.0.0.1:8000** adresini açın.
 
-### Örnek veriler
+> **Windows'ta `WinError 10013` hatası alırsanız** 8000 portu başka bir uygulama tarafından kullanılıyordur. Başka bir port seçin:
+> `python -m uvicorn app.main:app --reload --port 8080` → **http://127.0.0.1:8080**
 
-Uygulama her açıldığında 6 örnek ilanla başlar (2 kayıp, 4 bulunan). Böylece hiçbir veri girmeden eşleştirme denenebilir. Veriler bellekte tutulur; uygulama yeniden başlatılınca örnek verilere döner.
+Uygulamayı durdurmak için terminalde `Ctrl + C`.
 
-## Özellikler
+### Seçenek 2: Kurulum yapmadan, tarayıcıda (GitHub Codespaces)
 
-| # | Özellik | Durum |
-|---|---|---|
-| 1 | Kayıp / bulunan eşya ilanı oluşturma | ✅ Tamamlandı |
-| 2 | Kayıp ve bulunan ilanları otomatik eşleştirme | ✅ Tamamlandı |
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ahmetyahyay58/DevOps_Proje?quickstart=1)
 
-Ayrıca bu iki özelliği tarayıcıdan kullanmayı sağlayan bir **web arayüzü** eklendi (aşağıda).
+1. Yukarıdaki butona tıklayın, açılan sayfada **Create codespace**'e basın.
+2. 2–3 dakika bekleyin. Kurulum bitince uygulama kendiliğinden başlar ve ekranın sağında bir önizleme panelinde açılır.
+3. Önizleme açılmazsa ya da uygulamayı ayrı bir sekmede görmek isterseniz, alttaki terminalde **`http://0.0.0.0:8000`** linkine `Ctrl` tuşuna basılı tutarak tıklayın.
 
-### Özellik 1: Kayıp / bulunan eşya ilanı oluşturma
+Geliştirme ortamı `.devcontainer/devcontainer.json` dosyasında tanımlıdır; Codespaces bu dosyayı okuyarak Python'u, bağımlılıkları ve uygulamayı kendisi kurup başlatır.
 
-Kullanıcı kaybettiği ya da bulduğu bir eşya için ilan açar. İlanda tür (`kayip` / `bulundu`), kategori, açıklama, konum ve tarih bulunur.
+## Örnek Veriler
 
-**Uç noktalar**
+Uygulama her açıldığında aşağıdaki 6 ilanla başlar, böylece hiçbir veri girmeden denenebilir. Tarihler uygulamanın açıldığı güne göre hesaplanır. Veriler bellekte tutulur; uygulama yeniden başlatılınca bu hâline döner.
 
-| Yöntem | Adres | Açıklama |
-|---|---|---|
-| `POST` | `/ilanlar` | Yeni ilan oluşturur |
-| `GET` | `/ilanlar` | İlanları listeler (`?tur=kayip` veya `?tur=bulundu` ile filtrelenir) |
-| `GET` | `/ilanlar/{id}` | Tek bir ilanı getirir |
+| # | Tür | Kategori | Açıklama | Konum | Tarih |
+|---|---|---|---|---|---|
+| 1 | KAYIP | Cüzdan | Kahverengi deri cüzdan, içinde öğrenci kartı var | Kütüphane | 3 gün önce |
+| 2 | KAYIP | Telefon | Siyah telefon, kırık ekran koruyuculu | Yemekhane | 2 gün önce |
+| 3 | BULUNDU | Cüzdan | Kahverengi cüzdan bulundu, danışmaya teslim edildi | Kütüphane | 2 gün önce |
+| 4 | BULUNDU | Cüzdan | Siyah cüzdan, kantinin yanında | Mühendislik Fakültesi | 1 gün önce |
+| 5 | BULUNDU | Anahtar | Mavi anahtarlıklı ev anahtarı | Yemekhane | 1 gün önce |
+| 6 | BULUNDU | Cüzdan | Küçük bozuk para cüzdanı | Kütüphane | 5 gün önce |
 
-Geçerli kategoriler: `cuzdan`, `telefon`, `anahtar`, `kimlik_kart`, `canta`, `elektronik`, `kiyafet`, `diger`
+## Özellikleri Deneme
 
-**Nasıl denenir?** (`/docs` sayfasında)
+Uygulama açıldığında ana sayfada solda **Yeni ilan** formu, sağda **İlanlar** listesi görünür. Aşağıdaki adımlar uygulama ilk açıldığı hâliyle (yalnızca örnek verilerle) yazılmıştır.
 
-1. `POST /ilanlar` → **Try it out** → aşağıdaki gövdeyi yapıştırıp **Execute**'a basın:
-   ```json
-   {
-     "tur": "kayip",
-     "kategori": "cuzdan",
-     "aciklama": "Kahverengi deri cüzdan, içinde öğrenci kartı var",
-     "konum": "Kütüphane",
-     "tarih": "2026-11-15"
-   }
-   ```
-   **Beklenen:** `201` yanıtı ve yeni bir `id` içeren ilan (örnek veriler 1–6 numaraları kullandığı için ilk yeni ilan `7` olur).
-2. Aynı şekilde `"tur": "bulundu"` olan ikinci bir ilan ekleyin.
-3. `GET /ilanlar` → **Execute**: eklediğiniz ilanlar örnek ilanlarla birlikte listelenir. `tur` alanına `bulundu` yazarsanız yalnızca bulunan ilanları görürsünüz.
-4. **Hatalı girişler** (hepsi `422` döner):
-   - `"kategori": "uzay_gemisi"` → geçersiz kategori
-   - `kategori` alanını silmek → zorunlu alan eksik
-   - `"tarih"` olarak yarının tarihi → gelecek tarihli ilan açılamaz
+> #1 ve #2 uygulamanın arka ucunda (API) geliştirildi. Ana sayfadaki arayüz, bu iki özelliği tarayıcıdan kolayca denemek için sonradan eklendi ([PR #9](https://github.com/ahmetyahyay58/DevOps_Proje/pull/9)).
 
-### Özellik 2: Kayıp ve bulunan ilanları otomatik eşleştirme
+### Özellik 1: Kayıp / bulunan eşya ilanı oluşturma ([#1](https://github.com/ahmetyahyay58/DevOps_Proje/issues/1))
+
+Kullanıcı kaybettiği ya da bulduğu bir eşya için ilan açar ve ilanları türüne göre listeleyebilir.
+
+**Nasıl denenir?**
+
+1. **Yeni ilan** formunda **Buldum**'u seçin. Kategori: **Telefon**, Açıklama: `Siyah telefon, kılıfı yok`, Konum: **Yemekhane**. Tarih bugünün tarihiyle dolu gelir.
+2. **İlanı yayınla**'ya basın → formun altında *"İlan #7 yayınlandı."* yazar, ilan listenin en üstünde **#7** numarasıyla görünür. (Sağdan açılan eşleşme panelini şimdilik kapatabilirsiniz; Özellik 2'de kullanacağız.)
+3. Listenin üstündeki **Kayıp** / **Bulundu** / **Tümü** sekmelerine tıklayın → liste seçilen türe göre filtrelenir.
+4. Açıklama kutusuna yalnızca birkaç boşluk yazıp, konuma `Kantin` yazarak yayınlamayı deneyin → *"Bu alan boş bırakılamaz"* hatası görünür, ilan oluşmaz.
+5. Tarih alanında yarının tarihini seçmeyi deneyin → takvim bugünden sonraki günleri seçtirmez.
+
+**Kabul kriterleri ve nasıl görüleceği**
+
+| Kabul kriteri | Arayüzde nasıl görülür |
+|---|---|
+| Tür, kategori, açıklama, konum ve tarih bilgisiyle ilan oluşturulabiliyor ve sistem ilana bir ID veriyor | Adım 1–2: ilan yayınlanır ve **#7** numarasını alır |
+| Zorunlu alan eksikse ya da kategori geçersizse hata dönüyor | Adım 4: boş açıklama reddedilir. Kategori listeden seçildiği için geçersiz kategori girilemez |
+| Tüm ilanlar listelenebiliyor ve türe göre filtrelenebiliyor | Adım 3: sekmelerle filtreleme |
+| Gelecek tarihli ilan oluşturulamıyor | Adım 5: takvim gelecek tarihi seçtirmez; sunucu da bu tarihi reddeder |
+
+### Özellik 2: Kayıp ve bulunan ilanları otomatik eşleştirme ([#2](https://github.com/ahmetyahyay58/DevOps_Proje/issues/2))
 
 Bir ilan için karşı türdeki ilanlar taranır (kayıp ilanı için bulunanlar, bulunan ilanı için kayıplar) ve olası eşleşmeler **uyum puanına** göre sıralanır.
 
@@ -109,41 +101,35 @@ Bir ilan için karşı türdeki ilanlar taranır (kayıp ilanı için bulunanlar
 
 | Kural | Etkisi |
 |---|---|
-| Kategori aynı değil | Önerilmez |
+| Kategori farklı | Önerilmez |
 | Eşya kaybolmadan önce bulunmuş görünüyor | Önerilmez |
 | Kategori aynı | 50 puan |
 | Konum aynı (büyük/küçük harf fark etmez) | +30 puan |
 | Tarih yakınlığı | Aynı gün +20, her gün farkı için −2 (en az 0) |
 
-**Uç nokta**
-
-| Yöntem | Adres | Açıklama |
-|---|---|---|
-| `GET` | `/ilanlar/{id}/eslesmeler` | İlan için önerilen eşleşmeleri puanıyla birlikte listeler |
-
-**Nasıl denenir?** (`/docs` sayfasında, hiçbir veri girmeden)
-
-1. `GET /ilanlar/{ilan_id}/eslesmeler` → **Try it out** → `ilan_id` = **1** → **Execute**
-   **Beklenen:** 1 numaralı ilan (Kütüphane'de kaybolan kahverengi cüzdan) için iki öneri:
-   - **98 puan** — Kütüphane'de bulunan kahverengi cüzdan (aynı kategori + aynı konum + 1 gün fark)
-   - **66 puan** — Mühendislik Fakültesi'nde bulunan siyah cüzdan (aynı kategori, farklı konum)
-   - 6 numaralı cüzdan **önerilmez**, çünkü eşya kaybolmadan önce bulunmuş görünüyor.
-2. `ilan_id` = **2** ile deneyin (kayıp telefon) → **boş liste `[]`**, çünkü bulunan ilanlar arasında telefon yok.
-3. `ilan_id` = **3** ile deneyin (bulunan cüzdan) → ters yönde de çalışır: 1 numaralı kayıp ilanı önerilir.
-4. Kendi senaryonuz: `POST /ilanlar` ile bir `bulundu` ilanı ekleyin (`"kategori": "telefon"`, `"konum": "Yemekhane"`, bugünün tarihi), sonra tekrar `ilan_id` = **2** ile eşleşmelere bakın → yeni ilan yüksek puanla çıkar.
-
-### Web arayüzü
-
-Ana sayfada (`/`) iki özelliği tarayıcıdan kullanmayı sağlayan bir arayüz bulunur:
-
-- **İlan oluşturma formu:** Kaybettim/Buldum seçimi, kategori, açıklama, konum ve tarih. Hatalı girişlerde API'nin hata mesajı formun altında gösterilir.
-- **İlan listesi:** Tümü / Kayıp / Bulundu filtreleri.
-- **Eşleşme paneli:** Bir ilanda **Eşleşmeleri gör** butonuna basınca olası eşleşmeler puan çubuğu ve *Güçlü / Olası / Zayıf* etiketiyle listelenir. Yeni ilan yayınlanınca eşleşmeleri kendiliğinden açılır.
+Arayüzde 80 ve üstü puan **Güçlü**, 60–79 **Olası**, 60'ın altı **Zayıf** eşleşme olarak etiketlenir.
 
 **Nasıl denenir?**
-1. Ana sayfada listenin en altındaki **Kahverengi deri cüzdan** (#1, KAYIP) kartında **Eşleşmeleri gör**'e basın → 98 ve 66 puanlı iki öneri görünür.
-2. Formda **Buldum** seçin, kategori **Telefon**, konum **Yemekhane**, bugünün tarihiyle bir ilan yayınlayın → eşleşme paneli açılır ve 2 numaralı kayıp telefon yüksek puanla önerilir.
-3. Açıklamayı yalnızca boşluklardan oluşacak şekilde girip yayınlamayı deneyin → *Bu alan boş bırakılamaz* hatası görünür.
+
+1. Listenin en altındaki **#1 Kahverengi deri cüzdan** (KAYIP) kartında **Eşleşmeleri gör**'e basın → sağda bir panel açılır:
+   - **98 · Güçlü eşleşme:** #3 Kütüphane'de bulunan kahverengi cüzdan (aynı kategori + aynı konum + 1 gün fark)
+   - **66 · Olası eşleşme:** #4 Mühendislik Fakültesi'nde bulunan siyah cüzdan (aynı kategori, farklı konum)
+   - #6 Küçük bozuk para cüzdanı **önerilmez**: aynı kategori ve aynı konumda olsa da eşya kaybolmadan önce bulunmuş görünüyor.
+2. Paneli kapatıp **#2 Siyah telefon** (KAYIP) kartında **Eşleşmeleri gör**'e basın → *"Şu an uygun bir bulunan ilan yok"* yazar. Yemekhane'de bulunmuş bir anahtar (#5) olsa da kategorisi farklı olduğu için önerilmez.
+   *(Özellik 1'i denediyseniz #7 telefon ilanı burada yüksek puanla görünür; bu, yeni eklenen bir ilanın eşleştirmeye hemen dahil olduğunu gösterir.)*
+3. Ters yönde de çalışır: **#3** (BULUNDU) kartında **Eşleşmeleri gör** → #1 kayıp cüzdan önerilir.
+
+**Kabul kriterleri ve nasıl görüleceği**
+
+| Kabul kriteri | Arayüzde nasıl görülür |
+|---|---|
+| Bir kayıp ilanı için eşleşme önerileri puana göre büyükten küçüğe sıralı dönüyor | Adım 1: 98, ardından 66 |
+| Kategorisi farklı olan ilanlar önerilmiyor | Adım 2: #5 anahtar, #2 telefona önerilmez |
+| Bulunma tarihi kayıp tarihinden önce olan ilanlar önerilmiyor | Adım 1: #6 önerilmez |
+| Aynı konum ve yakın tarih daha yüksek puan alıyor | Adım 1: aynı konumdaki #3 (98) farklı konumdaki #4'ün (66) üstünde |
+| Eşleşme yoksa boş liste dönüyor | Adım 2: *"Şu an uygun bir bulunan ilan yok"* |
+
+> API'yi doğrudan denemek isterseniz uygulama adresinin sonuna **`/docs`** ekleyin; tüm uç noktalar orada **Try it out** butonuyla denenebilir.
 
 ## Geliştirme Süreci
 
@@ -157,7 +143,7 @@ Her görev panoda bir karta (GitHub issue) karşılık gelir ve kendi branch'ind
 
 ## Testler
 
-Kabul kriterlerinin her biri otomatik testlerle doğrulanır:
+Kabul kriterlerinin her biri otomatik testlerle de doğrulanır:
 
 ```bash
 python -m pytest -v
@@ -168,3 +154,10 @@ python -m pytest -v
 | `tests/test_ilan_olusturma.py` | #1 İlan oluşturma |
 | `tests/test_eslestirme.py` | #2 Otomatik eşleştirme |
 | `tests/test_arayuz.py` | Web arayüzü |
+
+## Kullanılan Teknolojiler
+
+- Python 3.12, FastAPI, Pydantic
+- HTML, CSS ve JavaScript (ek kütüphane ya da derleme adımı olmayan tek sayfalık arayüz)
+- Pytest (otomatik testler)
+- GitHub Codespaces + Dev Container (geliştirme ortamı kod olarak tanımlı, herkes aynı ortamı alır)
