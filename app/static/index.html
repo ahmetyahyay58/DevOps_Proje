@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kayıp Eşya — Kampüs</title>
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --kart: #ffffff;
+    --metin: #1f2328;
+    --soluk: #6b6f76;
+    --cizgi: #e4e1d8;
+    --vurgu: #2f5d50;
+    --vurgu-acik: #e3eee9;
+    --kayip: #b54a32;
+    --kayip-acik: #f8e6e0;
+    --bulundu: #2f6f9f;
+    --bulundu-acik: #e1edf6;
+    --uyari: #a86b12;
+    --golge: 0 1px 2px rgba(31, 35, 40, .06), 0 4px 16px rgba(31, 35, 40, .05);
+    --yaricap: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--metin);
+    line-height: 1.5;
+  }
+  header {
+    background: var(--vurgu);
+    color: #fff;
+    padding: 28px 24px 72px;
+  }
+  .kap { max-width: 1120px; margin: 0 auto; }
+  header h1 { margin: 0; font-size: 28px; letter-spacing: -.01em; }
+  header p { margin: 6px 0 0; opacity: .85; }
+  header a { color: #fff; opacity: .8; font-size: 14px; }
+  .ust-satir { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+
+  main { margin-top: -48px; padding: 0 24px 48px; }
+  .izgara { display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 860px) { .izgara { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--kart);
+    border-radius: var(--yaricap);
+    box-shadow: var(--golge);
+    padding: 22px;
+  }
+  .panel h2 { margin: 0 0 16px; font-size: 18px; }
+  form .alan { margin-bottom: 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--soluk); }
+  input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--cizgi);
+    border-radius: 10px;
+    font: inherit;
+    background: #fff;
+    color: var(--metin);
+  }
+  textarea { resize: vertical; min-height: 72px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--vurgu); outline-offset: 1px; border-color: transparent; }
+
+  .secim { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); border-radius: 10px; padding: 4px; }
+  .secim input { display: none; }
+  .secim label {
+    margin: 0; text-align: center; padding: 8px; border-radius: 8px; cursor: pointer;
+    font-size: 14px; color: var(--soluk);
+  }
+  .secim input:checked + label { background: #fff; color: var(--metin); box-shadow: var(--golge); }
+  .secim input#tur-kayip:checked + label { color: var(--kayip); }
+  .secim input#tur-bulundu:checked + label { color: var(--bulundu); }
+
+  button {
+    font: inherit; border: none; cursor: pointer; border-radius: 10px;
+    padding: 11px 16px; font-weight: 600;
+  }
+  .ana-buton { width: 100%; background: var(--vurgu); color: #fff; }
+  .ana-buton:hover { filter: brightness(1.08); }
+  .ana-buton:disabled { opacity: .6; cursor: wait; }
+
+  .mesaj { margin-top: 12px; font-size: 14px; padding: 10px 12px; border-radius: 10px; display: none; }
+  .mesaj.basari { display: block; background: var(--vurgu-acik); color: var(--vurgu); }
+  .mesaj.hata { display: block; background: var(--kayip-acik); color: var(--kayip); }
+
+  .liste-ust { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .liste-ust h2 { margin: 0; }
+  .sekmeler { display: flex; gap: 6px; }
+  .sekme {
+    background: var(--bg); color: var(--soluk); padding: 7px 14px; font-size: 14px; font-weight: 500;
+  }
+  .sekme.aktif { background: var(--metin); color: #fff; }
+
+  .ilanlar { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .ilan {
+    border: 1px solid var(--cizgi); border-radius: 12px; padding: 16px;
+    display: flex; flex-direction: column; gap: 10px; background: #fff;
+    transition: border-color .15s, transform .15s;
+  }
+  .ilan:hover { border-color: #cfcabd; transform: translateY(-1px); }
+  .ilan.secili { border-color: var(--vurgu); box-shadow: 0 0 0 2px var(--vurgu-acik); }
+  .ilan-ust { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .rozet { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: .02em; }
+  .rozet.kayip { background: var(--kayip-acik); color: var(--kayip); }
+  .rozet.bulundu { background: var(--bulundu-acik); color: var(--bulundu); }
+  .kategori { font-size: 13px; color: var(--soluk); }
+  .ilan p { margin: 0; font-weight: 500; }
+  .bilgi { display: flex; gap: 14px; font-size: 13px; color: var(--soluk); flex-wrap: wrap; }
+  .ikincil-buton { background: var(--bg); color: var(--metin); font-size: 14px; padding: 9px 12px; margin-top: auto; }
+  .ikincil-buton:hover { background: var(--cizgi); }
+  .bos { color: var(--soluk); text-align: center; padding: 32px 0; }
+
+  /* Eşleşme paneli */
+  .ortu {
+    position: fixed; inset: 0; background: rgba(31, 35, 40, .35);
+    display: none; justify-content: flex-end;
+  }
+  .ortu.acik { display: flex; }
+  .cekmece {
+    width: min(440px, 100%); height: 100%; background: var(--kart); padding: 24px;
+    overflow-y: auto; box-shadow: -8px 0 32px rgba(0, 0, 0, .12);
+  }
+  .cekmece-ust { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+  .cekmece h2 { margin: 0; font-size: 20px; }
+  .kapat { background: var(--bg); padding: 6px 12px; font-size: 18px; line-height: 1; }
+  .kaynak { margin: 14px 0 20px; padding: 14px; border-radius: 12px; background: var(--bg); font-size: 14px; }
+  .eslesme { border: 1px solid var(--cizgi); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .eslesme-ust { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .puan { font-size: 22px; font-weight: 700; }
+  .seviye { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+  .seviye.guclu { background: var(--vurgu-acik); color: var(--vurgu); }
+  .seviye.olasi { background: #f7ecd9; color: var(--uyari); }
+  .seviye.zayif { background: var(--bg); color: var(--soluk); }
+  .cubuk { height: 6px; background: var(--bg); border-radius: 999px; overflow: hidden; margin-bottom: 10px; }
+  .cubuk span { display: block; height: 100%; background: var(--vurgu); border-radius: 999px; }
+  .aciklama-not { font-size: 13px; color: var(--soluk); margin-top: 18px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="kap">
+    <div class="ust-satir">
+      <div>
+        <h1>Kayıp Eşya</h1>
+        <p>Kampüste kaybettiğin ya da bulduğun eşyayı kaydet, olası eşleşmeleri gör.</p>
+      </div>
+      <a href="/docs">API dokümantasyonu →</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="kap izgara">
+    <section class="panel">
+      <h2>Yeni ilan</h2>
+      <form id="form">
+        <div class="alan">
+          <div class="secim">
+            <input type="radio" name="tur" id="tur-kayip" value="kayip" checked>
+            <label for="tur-kayip">Kaybettim</label>
+            <input type="radio" name="tur" id="tur-bulundu" value="bulundu">
+            <label for="tur-bulundu">Buldum</label>
+          </div>
+        </div>
+        <div class="alan">
+          <label for="kategori">Kategori</label>
+          <select id="kategori" required></select>
+        </div>
+        <div class="alan">
+          <label for="aciklama">Açıklama</label>
+          <textarea id="aciklama" placeholder="Örn. Kahverengi deri cüzdan, içinde öğrenci kartı var" required></textarea>
+        </div>
+        <div class="alan">
+          <label for="konum">Konum</label>
+          <input id="konum" list="konumlar" placeholder="Örn. Kütüphane" required>
+          <datalist id="konumlar">
+            <option value="Kütüphane"><option value="Yemekhane"><option value="Mühendislik Fakültesi">
+            <option value="Spor Salonu"><option value="Kantin"><option value="Otopark">
+          </datalist>
+        </div>
+        <div class="alan">
+          <label for="tarih">Tarih</label>
+          <input type="date" id="tarih" required>
+        </div>
+        <button class="ana-buton" type="submit" id="gonder">İlanı yayınla</button>
+        <div class="mesaj" id="mesaj"></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="liste-ust">
+        <h2>İlanlar</h2>
+        <div class="sekmeler">
+          <button class="sekme aktif" data-tur="">Tümü</button>
+          <button class="sekme" data-tur="kayip">Kayıp</button>
+          <button class="sekme" data-tur="bulundu">Bulundu</button>
+        </div>
+      </div>
+      <div class="ilanlar" id="ilanlar"></div>
+    </section>
+  </div>
+</main>
+
+<div class="ortu" id="ortu">
+  <aside class="cekmece" role="dialog" aria-modal="true" aria-labelledby="cekmece-baslik">
+    <div class="cekmece-ust">
+      <h2 id="cekmece-baslik">Olası eşleşmeler</h2>
+      <button class="kapat" id="kapat" aria-label="Kapat">×</button>
+    </div>
+    <div class="kaynak" id="kaynak"></div>
+    <div id="eslesmeler"></div>
+    <p class="aciklama-not">
+      Puanlama: aynı kategori 50, aynı konum +30, tarih yakınlığı en fazla +20 (her gün farkı −2).
+      Farklı kategorideki ya da eşya kaybolmadan önce bulunmuş görünen ilanlar önerilmez.
+    </p>
+  </aside>
+</div>
+
+<script>
+  const KATEGORILER = {
+    cuzdan: "👛 Cüzdan",
+    telefon: "📱 Telefon",
+    anahtar: "🔑 Anahtar",
+    kimlik_kart: "🪪 Kimlik / Kart",
+    canta: "🎒 Çanta",
+    elektronik: "🎧 Elektronik",
+    kiyafet: "🧥 Kıyafet",
+    diger: "📦 Diğer",
+  };
+  const TUR_ETIKET = { kayip: "KAYIP", bulundu: "BULUNDU" };
+
+  let aktifTur = "";
+  let seciliId = null;
+
+  const $ = (id) => document.getElementById(id);
+
+  function kacis(metin) {
+    const div = document.createElement("div");
+    div.textContent = metin;
+    return div.innerHTML;
+  }
+
+  function tarihYaz(iso) {
+    return new Date(iso + "T00:00:00").toLocaleDateString("tr-TR", { day: "numeric", month: "long" });
+  }
+
+  function bugunISO() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 10);
+  }
+
+  function formuHazirla() {
+    $("kategori").innerHTML = Object.entries(KATEGORILER)
+      .map(([deger, ad]) => `<option value="${deger}">${ad}</option>`)
+      .join("");
+    $("tarih").value = bugunISO();
+    $("tarih").max = bugunISO();
+  }
+
+  function mesajGoster(metin, tur) {
+    const kutu = $("mesaj");
+    kutu.textContent = metin;
+    kutu.className = "mesaj " + tur;
+  }
+
+  function hataMetni(govde) {
+    if (Array.isArray(govde.detail)) {
+      return govde.detail.map((h) => h.msg.replace(/^Value error, /, "")).join(" · ");
+    }
+    return govde.detail || "Bir hata oluştu.";
+  }
+
+  async function ilanlariYukle() {
+    const adres = aktifTur ? `/ilanlar?tur=${aktifTur}` : "/ilanlar";
+    const yanit = await fetch(adres);
+    const ilanlar = await yanit.json();
+    ilanlar.sort((a, b) => b.id - a.id);
+
+    const kap = $("ilanlar");
+    if (ilanlar.length === 0) {
+      kap.innerHTML = `<div class="bos">Bu filtrede ilan yok.</div>`;
+      return;
+    }
+    kap.innerHTML = ilanlar.map(ilanKarti).join("");
+  }
+
+  function ilanKarti(ilan) {
+    return `
+      <article class="ilan ${ilan.id === seciliId ? "secili" : ""}">
+        <div class="ilan-ust">
+          <span class="rozet ${ilan.tur}">${TUR_ETIKET[ilan.tur]}</span>
+          <span class="kategori">${KATEGORILER[ilan.kategori] || ilan.kategori}</span>
+        </div>
+        <p>${kacis(ilan.aciklama)}</p>
+        <div class="bilgi">
+          <span>📍 ${kacis(ilan.konum)}</span>
+          <span>🗓️ ${tarihYaz(ilan.tarih)}</span>
+          <span>#${ilan.id}</span>
+        </div>
+        <button class="ikincil-buton" data-eslesme="${ilan.id}">Eşleşmeleri gör</button>
+      </article>`;
+  }
+
+  function seviye(puan) {
+    if (puan >= 80) return ["guclu", "Güçlü eşleşme"];
+    if (puan >= 60) return ["olasi", "Olası eşleşme"];
+    return ["zayif", "Zayıf eşleşme"];
+  }
+
+  async function eslesmeleriAc(ilanId) {
+    seciliId = ilanId;
+    const [ilanYanit, eslesmeYanit] = await Promise.all([
+      fetch(`/ilanlar/${ilanId}`),
+      fetch(`/ilanlar/${ilanId}/eslesmeler`),
+    ]);
+    const ilan = await ilanYanit.json();
+    const eslesmeler = await eslesmeYanit.json();
+
+    const karsiTur = ilan.tur === "kayip" ? "bulunan" : "kayıp";
+    $("kaynak").innerHTML = `
+      <span class="rozet ${ilan.tur}">${TUR_ETIKET[ilan.tur]}</span>
+      <strong style="margin-left:8px">${kacis(ilan.aciklama)}</strong>
+      <div class="bilgi" style="margin-top:8px">
+        <span>${KATEGORILER[ilan.kategori]}</span>
+        <span>📍 ${kacis(ilan.konum)}</span>
+        <span>🗓️ ${tarihYaz(ilan.tarih)}</span>
+      </div>`;
+
+    $("eslesmeler").innerHTML = eslesmeler.length === 0
+      ? `<div class="bos">Şu an uygun bir ${karsiTur} ilan yok.<br>Yeni ilanlar eklendikçe burada görünecek.</div>`
+      : eslesmeler.map(({ puan, ilan: aday }) => {
+          const [sinif, etiket] = seviye(puan);
+          return `
+            <div class="eslesme">
+              <div class="eslesme-ust">
+                <span class="puan">${puan}<small style="font-size:13px;color:var(--soluk)"> / 100</small></span>
+                <span class="seviye ${sinif}">${etiket}</span>
+              </div>
+              <div class="cubuk"><span style="width:${puan}%"></span></div>
+              <p style="margin:0 0 6px;font-weight:500">${kacis(aday.aciklama)}</p>
+              <div class="bilgi">
+                <span>📍 ${kacis(aday.konum)}</span>
+                <span>🗓️ ${tarihYaz(aday.tarih)}</span>
+                <span>#${aday.id}</span>
+              </div>
+            </div>`;
+        }).join("");
+
+    $("ortu").classList.add("acik");
+    ilanlariYukle();
+  }
+
+  function cekmeceyiKapat() {
+    $("ortu").classList.remove("acik");
+    seciliId = null;
+    ilanlariYukle();
+  }
+
+  $("form").addEventListener("submit", async (olay) => {
+    olay.preventDefault();
+    const buton = $("gonder");
+    buton.disabled = true;
+    const veri = {
+      tur: document.querySelector('input[name="tur"]:checked').value,
+      kategori: $("kategori").value,
+      aciklama: $("aciklama").value,
+      konum: $("konum").value,
+      tarih: $("tarih").value,
+    };
+    try {
+      const yanit = await fetch("/ilanlar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(veri),
+      });
+      const govde = await yanit.json();
+      if (!yanit.ok) {
+        mesajGoster(hataMetni(govde), "hata");
+        return;
+      }
+      mesajGoster(`İlan #${govde.id} yayınlandı.`, "basari");
+      $("aciklama").value = "";
+      $("konum").value = "";
+      await ilanlariYukle();
+      eslesmeleriAc(govde.id);
+    } catch {
+      mesajGoster("Sunucuya ulaşılamadı.", "hata");
+    } finally {
+      buton.disabled = false;
+    }
+  });
+
+  document.querySelectorAll(".sekme").forEach((sekme) => {
+    sekme.addEventListener("click", () => {
+      document.querySelectorAll(".sekme").forEach((s) => s.classList.remove("aktif"));
+      sekme.classList.add("aktif");
+      aktifTur = sekme.dataset.tur;
+      ilanlariYukle();
+    });
+  });
+
+  $("ilanlar").addEventListener("click", (olay) => {
+    const buton = olay.target.closest("[data-eslesme]");
+    if (buton) eslesmeleriAc(Number(buton.dataset.eslesme));
+  });
+
+  $("kapat").addEventListener("click", cekmeceyiKapat);
+  $("ortu").addEventListener("click", (olay) => { if (olay.target === $("ortu")) cekmeceyiKapat(); });
+  document.addEventListener("keydown", (olay) => { if (olay.key === "Escape") cekmeceyiKapat(); });
+
+  formuHazirla();
+  ilanlariYukle();
+</script>
+</body>
+</html>

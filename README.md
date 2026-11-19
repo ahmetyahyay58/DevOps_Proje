@@ -21,6 +21,7 @@ Görevler ve kabul kriterleri GitHub Projects panosunda takip ediliyor:
 ## Kullanılan Teknolojiler
 
 - Python 3.12, FastAPI, Pydantic
+- HTML, CSS ve JavaScript (ek kütüphane ya da derleme adımı olmayan tek sayfalık arayüz)
 - Pytest (otomatik testler)
 - GitHub Codespaces + Dev Container (kurulumsuz çalıştırma; geliştirme ortamı `.devcontainer/devcontainer.json` dosyasında kod olarak tanımlı, herkes aynı ortamı alır)
 
@@ -30,7 +31,7 @@ Görevler ve kabul kriterleri GitHub Projects panosunda takip ediliyor:
 
 1. Bu repo sayfasında **Code → Codespaces → Create codespace on main** butonuna tıklayın.
 2. Ortam kurulduğunda uygulama kendiliğinden başlar ve 8000 portu açılır.
-3. Açılan sayfanın adresinin sonuna `/docs` ekleyin.
+3. Açılan sayfada uygulamanın web arayüzü görünür. API dokümantasyonu için adresin sonuna `/docs` ekleyin.
 
 ### Seçenek 2: Kendi bilgisayarınızda
 
@@ -43,7 +44,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Tarayıcıda **http://localhost:8000/docs** adresini açın. Tüm uç noktalar bu sayfada **Try it out** butonuyla denenebilir.
+Tarayıcıda **http://localhost:8000** adresini açın: uygulamanın web arayüzü görünür. API dokümantasyonu **http://localhost:8000/docs** adresindedir; tüm uç noktalar orada **Try it out** butonuyla denenebilir.
 
 > **Not:** Windows'ta 8000 portu için `WinError 10013` hatası alırsanız başka bir port kullanın:
 > `python -m uvicorn app.main:app --reload --port 8080` → http://localhost:8080/docs
@@ -58,6 +59,8 @@ Uygulama her açıldığında 6 örnek ilanla başlar (2 kayıp, 4 bulunan). Bö
 |---|---|---|
 | 1 | Kayıp / bulunan eşya ilanı oluşturma | ✅ Tamamlandı |
 | 2 | Kayıp ve bulunan ilanları otomatik eşleştirme | ✅ Tamamlandı |
+
+Ayrıca bu iki özelliği tarayıcıdan kullanmayı sağlayan bir **web arayüzü** eklendi (aşağıda).
 
 ### Özellik 1: Kayıp / bulunan eşya ilanı oluşturma
 
@@ -124,6 +127,19 @@ Bir ilan için karşı türdeki ilanlar taranır (kayıp ilanı için bulunanlar
 3. `ilan_id` = **3** ile deneyin (bulunan cüzdan) → ters yönde de çalışır: 1 numaralı kayıp ilanı önerilir.
 4. Kendi senaryonuz: `POST /ilanlar` ile bir `bulundu` ilanı ekleyin (`"kategori": "telefon"`, `"konum": "Yemekhane"`, bugünün tarihi), sonra tekrar `ilan_id` = **2** ile eşleşmelere bakın → yeni ilan yüksek puanla çıkar.
 
+### Web arayüzü
+
+Ana sayfada (`/`) iki özelliği tarayıcıdan kullanmayı sağlayan bir arayüz bulunur:
+
+- **İlan oluşturma formu:** Kaybettim/Buldum seçimi, kategori, açıklama, konum ve tarih. Hatalı girişlerde API'nin hata mesajı formun altında gösterilir.
+- **İlan listesi:** Tümü / Kayıp / Bulundu filtreleri.
+- **Eşleşme paneli:** Bir ilanda **Eşleşmeleri gör** butonuna basınca olası eşleşmeler puan çubuğu ve *Güçlü / Olası / Zayıf* etiketiyle listelenir. Yeni ilan yayınlanınca eşleşmeleri kendiliğinden açılır.
+
+**Nasıl denenir?**
+1. Ana sayfada sağdaki **Kahverengi deri cüzdan** (#1, KAYIP) kartında **Eşleşmeleri gör**'e basın → 98 ve 66 puanlı iki öneri görünür.
+2. Formda **Buldum** seçin, kategori **Telefon**, konum **Yemekhane**, bugünün tarihiyle bir ilan yayınlayın → eşleşme paneli açılır ve 2 numaralı kayıp telefon yüksek puanla önerilir.
+3. Açıklamayı yalnızca boşluklardan oluşacak şekilde girip yayınlamayı deneyin → *Bu alan boş bırakılamaz* hatası görünür.
+
 ## Testler
 
 Kabul kriterlerinin her biri otomatik testlerle doğrulanır:
@@ -136,3 +152,4 @@ python -m pytest -v
 |---|---|
 | `tests/test_ilan_olusturma.py` | #1 İlan oluşturma |
 | `tests/test_eslestirme.py` | #2 Otomatik eşleştirme |
+| `tests/test_arayuz.py` | Web arayüzü |

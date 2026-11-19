@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import FileResponse
 
 from app.matching import eslesmeleri_bul
 from app.models import Eslesme, Ilan, IlanOlustur, IlanTuru
@@ -7,12 +10,20 @@ from app.storage import depo
 app = FastAPI(
     title="Kayıp Eşya API",
     description="Kampüste kaybolan ve bulunan eşyaları buluşturan servis.",
-    version="0.3.0",
+    version="0.4.0",
 )
 
+ARAYUZ = Path(__file__).parent / "static" / "index.html"
 
-@app.get("/", tags=["Genel"])
-def ana_sayfa():
+
+@app.get("/", include_in_schema=False)
+def arayuz():
+    """Web arayüzünü sunar."""
+    return FileResponse(ARAYUZ)
+
+
+@app.get("/saglik", tags=["Genel"])
+def saglik():
     """Servisin çalıştığını gösterir."""
     return {"servis": "Kayıp Eşya API", "durum": "çalışıyor", "dokumantasyon": "/docs"}
 
