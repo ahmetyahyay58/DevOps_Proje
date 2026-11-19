@@ -40,14 +40,14 @@ Python 3.10 veya üstü gerekir.
 ```bash
 git clone https://github.com/ahmetyahyay58/DevOps_Proje.git
 cd DevOps_Proje
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+python -m pip install -r requirements.txt
+python -m uvicorn app.main:app --reload
 ```
 
 Tarayıcıda **http://localhost:8000** adresini açın: uygulamanın web arayüzü görünür. API dokümantasyonu **http://localhost:8000/docs** adresindedir; tüm uç noktalar orada **Try it out** butonuyla denenebilir.
 
 > **Not:** Windows'ta 8000 portu için `WinError 10013` hatası alırsanız başka bir port kullanın:
-> `python -m uvicorn app.main:app --reload --port 8080` → http://localhost:8080/docs
+> `python -m uvicorn app.main:app --reload --port 8080` → http://localhost:8080
 
 ### Örnek veriler
 
@@ -136,9 +136,19 @@ Ana sayfada (`/`) iki özelliği tarayıcıdan kullanmayı sağlayan bir arayüz
 - **Eşleşme paneli:** Bir ilanda **Eşleşmeleri gör** butonuna basınca olası eşleşmeler puan çubuğu ve *Güçlü / Olası / Zayıf* etiketiyle listelenir. Yeni ilan yayınlanınca eşleşmeleri kendiliğinden açılır.
 
 **Nasıl denenir?**
-1. Ana sayfada sağdaki **Kahverengi deri cüzdan** (#1, KAYIP) kartında **Eşleşmeleri gör**'e basın → 98 ve 66 puanlı iki öneri görünür.
+1. Ana sayfada listenin en altındaki **Kahverengi deri cüzdan** (#1, KAYIP) kartında **Eşleşmeleri gör**'e basın → 98 ve 66 puanlı iki öneri görünür.
 2. Formda **Buldum** seçin, kategori **Telefon**, konum **Yemekhane**, bugünün tarihiyle bir ilan yayınlayın → eşleşme paneli açılır ve 2 numaralı kayıp telefon yüksek puanla önerilir.
 3. Açıklamayı yalnızca boşluklardan oluşacak şekilde girip yayınlamayı deneyin → *Bu alan boş bırakılamaz* hatası görünür.
+
+## Geliştirme Süreci
+
+Her görev panoda bir karta (GitHub issue) karşılık gelir ve kendi branch'inde geliştirilir. Kabul kriterleri testlerle doğrulandıktan sonra pull request açılır; PR açıklamasındaki `Closes #<issue>` ifadesi PR'ı karta bağlar ve merge edildiğinde kartı **Tamamlandı** sütununa taşır.
+
+| Görev | Branch | Pull request |
+|---|---|---|
+| [#1 İlan oluşturma](https://github.com/ahmetyahyay58/DevOps_Proje/issues/1) | `feature/1-ilan-olusturma` | [PR #7](https://github.com/ahmetyahyay58/DevOps_Proje/pull/7) |
+| [#2 Otomatik eşleştirme](https://github.com/ahmetyahyay58/DevOps_Proje/issues/2) | `feature/2-eslestirme` | [PR #8](https://github.com/ahmetyahyay58/DevOps_Proje/pull/8) |
+| Web arayüzü (ek) | `feature/web-arayuzu` | [PR #9](https://github.com/ahmetyahyay58/DevOps_Proje/pull/9) |
 
 ## Testler
 
