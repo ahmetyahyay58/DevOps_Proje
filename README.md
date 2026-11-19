@@ -30,8 +30,12 @@ Görevler ve kabul kriterleri GitHub Projects panosunda takip ediliyor:
 ### Seçenek 1: Kurulum yapmadan, tarayıcıda (GitHub Codespaces)
 
 1. Bu repo sayfasında **Code → Codespaces → Create codespace on main** butonuna tıklayın.
-2. Ortam kurulduğunda uygulama kendiliğinden başlar ve 8000 portu açılır.
-3. Açılan sayfada uygulamanın web arayüzü görünür. API dokümantasyonu için adresin sonuna `/docs` ekleyin.
+2. Ortam kurulduğunda (ilk açılışta 2–3 dakika) uygulama kendiliğinden başlar; terminalde `Application startup complete` yazar.
+3. Uygulamayı açmak için şu yollardan birini kullanın (tarayıcı açılır pencereyi engellediyse sayfa kendiliğinden açılmayabilir):
+   - Sağ altta çıkan **Open in Browser** bildirimine tıklayın, **ya da**
+   - Alttaki **Ports** (Bağlantı Noktaları) sekmesinde 8000 satırındaki 🌐 simgesine tıklayın, **ya da**
+   - Terminaldeki `http://0.0.0.0:8000` linkine `Ctrl` + tıklayın.
+4. Açılan sayfada uygulamanın web arayüzü görünür. API dokümantasyonu için adresin sonuna `/docs` ekleyin.
 
 ### Seçenek 2: Kendi bilgisayarınızda
 
