@@ -2,6 +2,8 @@
 
 Kampüste kaybolan ve bulunan eşyaları buluşturan bir web servisi.
 
+> **Hızlıca denemek için:** [Projeyi Çalıştırma](#projeyi-çalıştırma) bölümündeki **Open in GitHub Codespaces** butonuna tıklayın; kurulum gerekmez.
+
 ## Problem
 
 Kampüste kaybolan eşyalar (cüzdan, telefon, anahtar, öğrenci kartı…) genellikle WhatsApp gruplarında ve panolarda duyuruluyor. Bu mesajlar kısa sürede kayboluyor, eşyayı bulan kişi sahibine ulaşamıyor, eşyasını kaybeden kişi de nereye bakacağını bilmiyor.
@@ -27,15 +29,14 @@ Görevler ve kabul kriterleri GitHub Projects panosunda takip ediliyor:
 
 ## Projeyi Çalıştırma
 
-### Seçenek 1: Kurulum yapmadan, tarayıcıda (GitHub Codespaces)
+### Seçenek 1: Kurulum yapmadan, tarayıcıda (önerilen)
 
-1. Bu repo sayfasında **Code → Codespaces → Create codespace on main** butonuna tıklayın.
-2. Ortam kurulduğunda (ilk açılışta 2–3 dakika) uygulama kendiliğinden başlar; terminalde `Application startup complete` yazar.
-3. Uygulamayı açmak için şu yollardan birini kullanın (tarayıcı açılır pencereyi engellediyse sayfa kendiliğinden açılmayabilir):
-   - Sağ altta çıkan **Open in Browser** bildirimine tıklayın, **ya da**
-   - Alttaki **Ports** (Bağlantı Noktaları) sekmesinde 8000 satırındaki 🌐 simgesine tıklayın, **ya da**
-   - Terminaldeki `http://0.0.0.0:8000` linkine `Ctrl` + tıklayın.
-4. Açılan sayfada uygulamanın web arayüzü görünür. API dokümantasyonu için adresin sonuna `/docs` ekleyin.
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ahmetyahyay58/DevOps_Proje?quickstart=1)
+
+1. Yukarıdaki butona tıklayın, açılan sayfada **Create codespace**'e basın.
+2. 2–3 dakika bekleyin. Kurulum bitince uygulama, ekranın içinde kendiliğinden açılır.
+
+Uygulamayı ayrı bir sekmede tam ekran görmek isterseniz, açılan önizleme panelinin sağ üstündeki **Tarayıcıda aç** simgesine tıklayın. API dokümantasyonu için adresin sonuna `/docs` ekleyin.
 
 ### Seçenek 2: Kendi bilgisayarınızda
 
